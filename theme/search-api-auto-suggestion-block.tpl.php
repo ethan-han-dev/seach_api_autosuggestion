@@ -4,7 +4,7 @@
  * @file
  * Search api auto suggestion block theme file.
  */
-  
+
 ?>
 
 <?php if ($variables['original_term'] != NULL): ?>

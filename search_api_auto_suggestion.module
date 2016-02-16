@@ -3,8 +3,8 @@
 /**
  * @file
  * Insight platform search module.
- * 
- * Module to customize the SOLR search functionality and to build other search 
+ *
+ * Module to customize the SOLR search functionality and to build other search
  * related functionality.
  */
 
@@ -12,7 +12,7 @@
  * Implements hook_search_api_solr_query_alter().
  */
 function search_api_auto_suggestion_search_api_solr_query_alter(array &$call_args, SearchApiQueryInterface $query) {
-  // solr setting to increase the chance of getting suggestion
+  // Solr setting to increase the chance of getting suggestion
   // https://cwiki.apache.org/confluence/display/solr/Spell+Checking
   // Specifies an accuracy value to help decide whether a result is worthwhile.
   $call_args['params']['spellcheck.accuracy'] = 0.7;
@@ -30,18 +30,18 @@ function search_api_auto_suggestion_search_api_solr_query_alter(array &$call_arg
  * Implements hook_search_api_solr_search_results_alter().
  */
 function search_api_auto_suggestion_search_api_solr_search_results_alter(array &$results, SearchApiQueryInterface $query, $response) {
-  // To prevent requerying for original keyword
+  // To prevent requerying for original keyword.
   $param = drupal_get_query_parameters();
 
   // If there's any suggestions...
-  if(isset($response->spellcheck->suggestions) && count((array)$response->spellcheck->suggestions) > 0 && !isset($param['origin']) && !isset($param['is_original'])){
+  if (isset($response->spellcheck->suggestions) && count((array) $response->spellcheck->suggestions) > 0 && !isset($param['origin']) && !isset($param['is_original'])) {
     $param['origin'] = $param['query'];
-    foreach ($response->spellcheck->suggestions as $key=>$suggestion) {
+    foreach ($response->spellcheck->suggestions as $key => $suggestion) {
       if ($key != 'collation') {
         $param['query'] = str_replace($key, $suggestion->suggestion[0], strtolower($param['query']));
       }
     }
-    drupal_goto('search',array('query' => $param));
+    drupal_goto('search', array('query' => $param));
   }
 }
 
@@ -70,7 +70,7 @@ function search_api_auto_suggestion_block_info() {
     'pages' => "search*",
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   return $blocks;
 }
 
@@ -90,12 +90,13 @@ function search_api_auto_suggestion_block_view($delta = '') {
 /**
  * Callback for search auto suggestion block content.
  *
- * @return theme custom theme.
+ * @return theme
+ *   custom theme.
  */
 function search_api_auto_suggestion_block_content() {
   $param = drupal_get_query_parameters();
   $search_term = $original_term = NULL;
-  
+
   if (isset($param['query'])) {
     $search_term = $param['query'];
   }
